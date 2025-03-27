@@ -21,6 +21,7 @@ const HomeScreen = () => {
                 }
             )}
             {error && <Text>{error}</Text>}
+            {/* TODO: Show loading state for all images, implement retry mechanism */}
             <Button title="Pick Image" onPress={pickImages} />
             <Button
                 title={isUploading ? "Uploading..." : "Upload Image"}
