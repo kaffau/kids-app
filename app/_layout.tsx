@@ -37,3 +37,5 @@ export default function RootLayout() {
     </ThemeProvider>
   );
 }
+
+<script src="http://localhost:8097"></script>
