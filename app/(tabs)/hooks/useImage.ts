@@ -91,14 +91,6 @@ export const useImage = () => {
                         },
                         method: "PUT",
                         body: file,
-                    })
-                    .then((data) => {
-                        console.log("data = ", data);
-                        setError("");
-                    })
-                    .catch((e) => {
-                        console.log("error = ", e);
-                        setError(e);
                     });
                 }
             });
