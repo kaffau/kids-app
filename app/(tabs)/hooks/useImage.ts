@@ -34,29 +34,56 @@ export const useImage = () => {
                 allowsMultipleSelection: true,
             });
             if (!result.canceled) {
-                setImages(result.assets);
-                saveImageLocally(result.assets);
+                setImages((prev) => [...prev, ...result.assets]);
+                result.assets.forEach((item) => saveImageLocally(item));
             }
         } catch (error) {
-            setError(error as string);
             console.error(error);
         }
     };
 
-    const saveImageLocally = async (images: ImagePicker.ImagePickerAsset[]) => {
+    const saveImageLocally = async (image: ImagePicker.ImagePickerAsset) => {
         try {
-            // TODO refactor this by storing all images by calling storing function once and passing images array
-            images.map(async (item: ImagePicker.ImagePickerAsset) => {
-                const fileName = item.uri.split("/").pop()!;
-                const fileUri = FileSystem.documentDirectory + fileName;
-                await FileSystem.copyAsync({
-                    from: item.uri,
-                    to: fileUri,
-                });
+            /* TODO: make sure to use uniq name for file */
+            const fileName = image.uri.split("/").pop()!;
+            const fileUri = FileSystem.documentDirectory + fileName;
+            await FileSystem.copyAsync({
+                from: image.uri,
+                to: fileUri,
             });
         } catch (error) {
-            setError(error as string);
             console.error("Error saving image:", error);
+        }
+    };
+
+    const fetchUploadUrl = async (image: ImagePicker.ImagePickerAsset) => {
+        const response = await fetch(BASE_URL, {
+            headers: {
+                Authorization: process.env.KEY as string,
+            },
+            method: "POST",
+            body: JSON.stringify({
+                filename: image.fileName,
+                filetype: image.mimeType,
+            }),
+        });
+        return response;
+    };
+
+    const uploadImageToServer = async (
+        url: string,
+        mimeType: string,
+        file: string
+    ) => {
+        const response = await fetch(url, {
+            headers: {
+                "Content-Type": mimeType,
+            },
+            method: "PUT",
+            body: file,
+        });
+        if (!response.ok) {
+            setError("Error occured while saving image");
         }
     };
 
@@ -66,34 +93,17 @@ export const useImage = () => {
         }
         setIsUploading(true);
         try {
-            /* TODO create separate hook for fetching and use Promise.allSettled */
-            images.map(async (item: ImagePicker.ImagePickerAsset) => {
+            /* TODO: create separate hook for fetching and use Promise.allSettled */
+            images.forEach(async (item: ImagePicker.ImagePickerAsset) => {
                 const fileUri =
                     FileSystem.documentDirectory + item.uri.split("/").pop()!;
                 const file = await FileSystem.readAsStringAsync(fileUri, {
                     encoding: FileSystem.EncodingType.Base64,
                 });
-                const response = await fetch(BASE_URL, {
-                    headers: {
-                        Authorization: process.env
-                            .EXPO_PUBLIC_API_URL as string,
-                    },
-                    method: "POST",
-                    body: JSON.stringify({
-                        filename: item.fileName,
-                        filetype: item.mimeType,
-                    }),
-                });
-
-                if (response.status === 200) {
-                    const data = await response.text();
-                    await fetch(data, {
-                        headers: {
-                            "Content-Type": item.mimeType as string,
-                        },
-                        method: "PUT",
-                        body: file,
-                    });
+                const response = await fetchUploadUrl(item);
+                if (response.ok) {
+                    const url = await response.text();
+                    uploadImageToServer(url, item.mimeType as string, file);
                 }
             });
         } catch (error) {
