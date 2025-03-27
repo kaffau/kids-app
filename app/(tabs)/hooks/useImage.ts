@@ -45,6 +45,7 @@ export const useImage = () => {
 
     const saveImageLocally = async (images: ImagePicker.ImagePickerAsset[]) => {
         try {
+            // TODO refactor this by storing all images by calling storing function once and passing images array
             images.map(async (item: ImagePicker.ImagePickerAsset) => {
                 const fileName = item.uri.split("/").pop()!;
                 const fileUri = FileSystem.documentDirectory + fileName;
