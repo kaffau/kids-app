@@ -64,6 +64,7 @@ export const useImage = () => {
         }
         setIsUploading(true);
         try {
+            /* TODO create separate hook for fetching and use Promise.allSettled */
             images.map(async (item: ImagePicker.ImagePickerAsset) => {
                 const fileUri =
                     FileSystem.documentDirectory + item.uri.split("/").pop()!;
