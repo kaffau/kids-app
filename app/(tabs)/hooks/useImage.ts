@@ -38,6 +38,7 @@ export const useImage = () => {
                 saveImageLocally(result.assets);
             }
         } catch (error) {
+            setError(error as string);
             console.error(error);
         }
     };
@@ -54,6 +55,7 @@ export const useImage = () => {
                 });
             });
         } catch (error) {
+            setError(error as string);
             console.error("Error saving image:", error);
         }
     };
