@@ -15,11 +15,7 @@ const HomeScreen = () => {
                         <Image
                             key={index}
                             source={{ uri: image.uri }}
-                            style={{
-                                width: 200,
-                                height: 200,
-                                marginBottom: 20,
-                            }}
+                            style={styles.image}
                         />
                     );
                 }
@@ -43,6 +39,11 @@ const styles = StyleSheet.create({
     },
     title: {
       marginBottom: 20
+    },
+    image: {
+      width: 200,
+      height: 200,
+      marginBottom: 20,
     }
 });
 
