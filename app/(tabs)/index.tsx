@@ -8,7 +8,7 @@ const HomeScreen = () => {
         useImage();
     return (
         <View style={styles.container}>
-            <Text style={{ marginBottom: 20 }}>Offline Image Upload App</Text>
+            <Text style={styles.title}>Offline Image Upload App</Text>
             {images?.map(
                 (image: ImagePicker.ImagePickerAsset, index: number) => {
                     return (
@@ -41,6 +41,9 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
+    title: {
+      marginBottom: 20
+    }
 });
 
 export default HomeScreen;
