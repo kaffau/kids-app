@@ -1,16 +1,15 @@
-import { Image, Button, View, Text } from "react-native";
+import { Image, Button, View, Text, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useImage } from "./hooks/useImage";
 import React from "react";
 
 const HomeScreen = () => {
-  const { images, error, pickImages, isUploading, handleUploadWhenOnline } = useImage();
+    const { images, error, pickImages, isUploading, handleUploadWhenOnline } =
+        useImage();
     return (
-        <View
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
+        <View style={styles.container}>
             <Text style={{ marginBottom: 20 }}>Offline Image Upload App</Text>
-            {images.map(
+            {images?.map(
                 (image: ImagePicker.ImagePickerAsset, index: number) => {
                     return (
                         <Image
@@ -35,5 +34,13 @@ const HomeScreen = () => {
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+});
 
 export default HomeScreen;
